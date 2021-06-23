@@ -3,15 +3,15 @@ from faker import Faker
 fake= Faker()
 
 """ Pamiętaj:
-    - tytuł duża litera
+    
     -sezon i epizot dodaj '0' """
 
 
 class Film:
     def __init__(self, name, year, sort):
-        self.name = name
+        self.name = name.title()
         self.year = year
-        self.sort = sort
+        self.sort = sort.title()
 
         self.number_of_plays = 0
 
@@ -19,7 +19,7 @@ class Film:
         return f'{self.name} ({self.year})'
 
     def __repr__(self):
-        return f'Film(name={self.name}, year={self.year}, sort={self.sort}'
+        return 'Film(name={}, year={}, sort={}'.format(self.name, self.year, self.sort)
 
     def play(self, step=1):
         self.number_of_plays += step
@@ -32,11 +32,16 @@ class Serial(Film):
         self.episode = episode
 
     def __str__(self):
+        if self.season < 10:
+            self.season = '0{}'.format(self.season)
+        if self.episode < 10:
+            self.episode = '0{}'.format(self.episode)
         return f'{self.name} S{self.season}E{self.episode}'
 
     def __repr__(self):
         return f'Serial(name={self.name}, season={self.season}, episode={self.episode}, year={self.year}, sort={self.sort}'
-
+    
+    
 
 films_end_series = []
 
@@ -69,22 +74,32 @@ def multi_generate(lista):
     for number in range(10):
         generate_views(lista)
 
-def top_titles(number, content_type='all'):
-    ranking = sorted(films_end_series, key=lambda ranking: ranking.number_of_plays)
+def top_titles(number, library, content_type='all'):
+
+    ranking = sorted(library, key=lambda ranking: ranking.number_of_plays)
+    ranking.reverse()
     for title in range(number):
         print(ranking[title])
 
-def costam():
-    fake.year
-    fake.word
-
-movie_sort = ['bajka', 'akcja', 'kryminał', 'biografia']
+def add_season(serial_name, serial_year, serial_sort, number_season, count_episode, library):
+    for number in range(1, count_episode+1):
+        library.append(Serial(name=serial_name, year=serial_year, sort=serial_sort, season=number_season, episode=number))
 
 
-for movie in range(100):
-    films_end_series.append(Film(name=fake.word(), year=fake.year(), sort=movie_sort[random.randint(0, len(movie_sort)-1)]))
-    films_end_series.append(Serial(name=fake.word(), season=random.randint(1, 10), episode=random.randint(1, 27), year=fake.year(), sort=movie_sort[random.randint(0, len(movie_sort)-1)]))
+if __name__ == '__main__':
 
-generate_views(films_end_series)
-multi_generate(films_end_series)
-top_titles(3)
+    movie_sort = ['bajka', 'akcja', 'kryminał', 'biografia']
+
+
+    add_season('Simson', '1990', 'bajka', 2, 12, films_end_series)
+
+
+
+    for movie in range(100):
+        films_end_series.append(Film(name=fake.word(), year=fake.year(), sort=movie_sort[random.randint(0, len(movie_sort)-1)]))
+        films_end_series.append(Serial(name=fake.word(), season=random.randint(1, 10), episode=random.randint(1, 27), year=fake.year(), sort=movie_sort[random.randint(0, len(movie_sort)-1)]))
+
+    print(films_end_series[0].number_of_plays)
+    generate_views(films_end_series)
+    multi_generate(films_end_series)
+    top_titles(3, films_end_series)
