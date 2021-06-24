@@ -32,11 +32,8 @@ class Serial(Film):
         self.episode = episode
 
     def __str__(self):
-        if self.season < 10:
-            self.season = '0{}'.format(self.season)
-        if self.episode < 10:
-            self.episode = '0{}'.format(self.episode)
-        return f'{self.name} S{self.season}E{self.episode}'
+        return '{} S{:02d}E{:02d}'.format(self.name, self.season, self.episode)
+
 
     def __repr__(self):
         return f'Serial(name={self.name}, season={self.season}, episode={self.episode}, year={self.year}, sort={self.sort}'
@@ -122,4 +119,4 @@ if __name__ == '__main__':
     now = datetime.date.today()
     now = now.strftime('%d.%m.%Y')
     print("Najpopularniejsze filmy i seriale dnia {}: ".format(now))
-    top_titles(3, films_end_series, 'movies')
+    top_titles(3, films_end_series, 'series')
